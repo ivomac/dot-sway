@@ -1,0 +1,21 @@
+#!/usr/bin/env zsh
+
+pkill lisgd
+
+show_bar="swaymsg bar mode dock bar-0"
+hide_bar="swaymsg bar mode hide bar-0"
+
+show_kbd="pkill --signal=USR2 wvkbd-mobintl"
+hide_kbd="pkill --signal=USR1 wvkbd-mobintl"
+
+launcher="launcher launch new"
+
+lisgd \
+	-g "3,RL,R,*,R,swaymsg workspace prev_on_output" \
+	-g "3,LR,R,*,R,swaymsg workspace next_on_output" \
+	-g "3,RL,L,*,R,$hide_bar" \
+	-g "3,LR,L,*,R,$show_bar" \
+	-g "3,UD,B,*,R,$hide_kbd" \
+	-g "3,DU,B,*,R,$show_kbd" \
+	-g "3,UD,T,*,R,$show_kbd && $launcher & disown" \
+	-d "/dev/input/by-path/pci-0000:00:15.1-platform-i2c_designware.1-event" & disown

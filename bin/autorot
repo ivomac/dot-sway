@@ -1,0 +1,7 @@
+#!/usr/bin/zsh
+
+if pgrep rot8; then
+	pkill rot8
+else
+	rot8 --sleep 1000 --hooks "gestures" & disown
+fi

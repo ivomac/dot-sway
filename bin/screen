@@ -1,0 +1,205 @@
+#!/usr/bin/env python
+
+import argparse
+import subprocess as sp
+from datetime import datetime
+from json import loads
+from os import getenv
+from time import sleep
+
+HOME = getenv("HOME", "/")
+MENU = getenv("MENU", "dmenu").split()
+
+OUT_INFO = loads(sp.check_output(["swaymsg", "-r", "-t", "get_outputs"]))
+
+
+def main():
+    try:
+        call(["pkill", "wf-recorder"])
+        call(["notify-send", "recording finished."])
+        return
+    except sp.CalledProcessError:
+        pass
+
+    parser = argparse.ArgumentParser(
+        description="Manage sway screens.",
+        add_help=True,
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
+    parser.add_argument(
+        "action",
+        nargs="?",
+        help="""
+dark      change wallpaper to dark screen
+change    change the config of an output
+shot      take a screenshot
+record    record focused screen
+convert   compress recorded video""",
+    )
+    arg = parser.parse_args()
+
+    switch = {
+        "dark": dark,
+        "change": change,
+        "shot": shot,
+        "record": record,
+        "convert": convert,
+    }
+
+    action = arg.action
+    if not action:
+        action = menu(switch.keys())
+    func = switch[action]
+    func()
+    return
+
+
+def sway(*cmd):
+    arg = "output " + " ".join(*cmd)
+    return call(["swaymsg", arg])
+
+
+def dark():
+    sway(["*", "bg", "#000000", "solid_color"])
+
+
+def getfullresolution():
+    full = [0, 0]
+    for out in OUT_INFO:
+        if "current_mode" in out:
+            full[0] += out["current_mode"]["width"]
+            full[1] += out["current_mode"]["height"]
+    return f"0,0 {full[0]}x{full[1]}"
+
+
+def record():
+    sleep(0.2)
+    for out in OUT_INFO:
+        if out["active"] and out["focused"]:
+            break
+    else:
+        raise Exception("No focused screen found.")
+
+    filename = "screengrab.mkv"
+    call(
+        [
+            "wf-recorder",
+            "-c",
+            "libx264rgb",
+            "-o",
+            out["name"],
+            "-r",
+            "60",
+            "-D",
+            "-f",
+            filename,
+        ]
+    )
+    return
+
+
+def convert():
+    filename = "screengrab.mkv"
+    filename_comp = "screengrab_comp.mkv"
+    call(
+        [
+            "ffmpeg",
+            "-i",
+            filename,
+            "-c:v",
+            "libx264",
+            "-c:a",
+            "copy",
+            "-crf",
+            "20",
+            "-vf",
+            "format=yuv444p",
+            filename_comp,
+        ]
+    )
+    call(["notify-send", "conversion done."])
+    return
+
+
+def shot():
+    def make_mode_str(mode):
+        return f"{mode['x']},{mode['y']} {mode['width']}x{mode['height']}"
+
+    def getselection():
+        return sp.check_output(["slurp"]).strip()
+
+    def take(area):
+        f = str(datetime.now()) + ".png"
+        call(["grim", "-g", area, f])
+
+    switch = {
+        "Full": getfullresolution,
+        "Selection": getselection,
+    }
+
+    for i, out in enumerate(OUT_INFO):
+        if "current_mode" in out.keys():
+            switch[f"Screen {i} - {out['name']}"] = make_mode_str(out["rect"])
+
+    func = switch[menu(switch.keys())]
+    if isinstance(func, str):
+        area = func
+    else:
+        area = func()
+
+    sleep(0.2)
+    take(area)
+
+    return
+
+
+def change():
+    def make_mode_str(mode):
+        refresh = str(mode["refresh"])
+        refresh = ".".join([refresh[:-3], refresh[-3:]])
+        return f"{mode['width']}x{mode['height']}@{refresh}Hz"
+
+    def make_name_str(out):
+        dims = make_mode_str(out["current_mode"]) if "current_mode" in out else ""
+        offsets = out["rect"]["x"], out["rect"]["y"]
+        mode_str = f"{dims}+{offsets[0]}+{offsets[1]}" if out["active"] else "Off"
+        return f"{out['name']}> {out['model']}: {mode_str}"
+
+    names = {make_name_str(out) for out in OUT_INFO}
+
+    name = menu(names).split(">")[0]
+
+    for out in OUT_INFO:
+        if out["name"] == name:
+            break
+    else:
+        raise Exception(f"Output {name} not found.")
+
+    modes = [make_mode_str(mode) for mode in out["modes"]]
+    modes.append("Disable")
+
+    mode = menu(modes)
+
+    if mode == "Disable":
+        sway([name, "disable"])
+    else:
+        pos = menu([]).split()
+        sway([name, "enable", "pos", pos[0], pos[1], "res", mode])
+    return
+
+
+def tostr(inp, sep="\n"):
+    if isinstance(inp, str):
+        return inp
+    return sep.join(inp)
+
+
+def call(prog, inp=None):
+    return sp.check_output(prog, input=inp, text=True).strip()
+
+
+def menu(inp, *args):
+    return call([*MENU, *args], inp=tostr(inp, sep="\n"))
+
+
+main()

@@ -1,0 +1,37 @@
+/* Gruvbox Light */
+
+@define-color black #fbf1c7;
+@define-color red #cc241d;
+@define-color green #98971a;
+@define-color yellow #d79921;
+@define-color blue #458588;
+@define-color magenta #b16286;
+@define-color cyan #689d6a;
+@define-color white #7c6f64;
+@define-color black1 #928374;
+@define-color red1 #9d0006;
+@define-color green1 #79740e;
+@define-color yellow1 #b57614;
+@define-color blue1 #076678;
+@define-color magenta1 #8f3f71;
+@define-color cyan1 #427b58;
+@define-color white1 #3c3836;
+
+@define-color orange #d65d0e;
+@define-color orange1 #af3a03;
+
+@define-color bg0 #fbf1c7;
+@define-color bg1 #ebdbb2;
+@define-color bg2 #d5c4a1;
+@define-color bg3 #bdae93;
+@define-color bg4 #a89984;
+
+@define-color fg0 #282828;
+@define-color fg1 #3c3836;
+@define-color fg2 #504945;
+@define-color fg3 #665c54;
+@define-color fg4 #7c6f64;
+
+@define-color bg @bg0;
+@define-color fg @fg1;
+

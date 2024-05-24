@@ -1,0 +1,5 @@
+#!/usr/bin/sh
+
+ROOT="$XDG_CONFIG_HOME/sway/plugins/waybar"
+exec waybar -s "$ROOT/bar-$1/style.css" -c "$ROOT/bar-$1/config" -b "bar-$1"
+

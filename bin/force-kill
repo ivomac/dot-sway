@@ -1,0 +1,11 @@
+#!/usr/bin/env zsh
+
+tofi=$(pgrep tofi)
+
+if [[ -n "$tofi" ]]; then
+	echo "$tofi" | xargs kill -9
+else
+	PIDS=$(swaymsg -t get_tree | jq '.. | select(.type?) | select(.focused==true).pid')
+	echo "$PIDS" | xargs kill -9
+fi
+

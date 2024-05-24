@@ -1,0 +1,8 @@
+#!/usr/bin/env zsh
+
+if ! swaymsg \[app_id="$1"\] focus ; then
+	swaymsg focus output eDP-1
+	~/.config/sway/plugins/wk30/new-workspace.zsh
+	$1 & disown
+fi
+

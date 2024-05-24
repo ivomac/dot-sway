@@ -1,0 +1,135 @@
+#!/usr/bin/env python
+
+import shelve
+import subprocess as sp
+from os import getenv, walk
+from pathlib import Path
+from re import search
+from sys import argv
+
+from filelock import FileLock
+
+MENU = getenv("MENU", "dmenu").split()
+HOME = getenv("HOME", "/")
+cachefile = HOME + "/.local/lib/python/launchercache.py"
+lock = FileLock(cachefile + ".lock")
+
+
+def main():
+    switch = {
+        "launch": launch,
+        "update": updatecache,
+    }
+
+    func = switch[str(argv[1])]
+    func()
+
+
+def updatecache():
+    progs = {
+        "Update Launcher": {
+            "term": False,
+            "cmd": f"{str(__file__)} update",
+        },
+        "Update Hosts File": {
+            "term": False,
+            "cmd": "update-hosts-file",
+        },
+        "Reload Sway": {
+            "term": False,
+            "cmd": "swaymsg reload",
+        },
+        "Exit Sway": {
+            "term": False,
+            "cmd": "sway exit",
+        },
+        "Lock Screen": {
+            "term": False,
+            "cmd": "swaylock -n -f -u -c 000000",
+        },
+        "Reboot": {
+            "term": False,
+            "cmd": "shutdown -r now",
+        },
+        "Shutdown": {
+            "term": False,
+            "cmd": "shutdown now",
+        },
+    }
+
+    dirs = [
+        "/usr/share/applications",
+        HOME + "/.local/share/applications",
+        "/usr/lib/",
+    ]
+
+    for d in dirs:
+        for dirpath, _, filenames in walk(d):
+            for f in filenames:
+                if f.endswith(".desktop"):
+                    text = (Path(dirpath) / f).read_text()
+
+                    s = search(r"Exec=(.*?)[%\n]", text)
+                    if s is None:
+                        continue
+
+                    exe = s.group(1).strip().strip("\"'")
+
+                    s = search(r"Name=(.*)\n", text)
+                    if s is None:
+                        name = exe
+                    else:
+                        name = s.group(1)
+
+                    s = search(r"Terminal=(.*)\n", text)
+                    if s is not None:
+                        term = s.group(1) == "true"
+                    else:
+                        term = False
+
+                    progs[name] = {
+                        "term": term,
+                        "cmd": exe,
+                    }
+
+    cache = shelve.open(cachefile)
+    cache["progs"] = progs
+    cache.close()
+    launch()
+
+
+def launch():
+    with lock:
+        cache = shelve.open(cachefile)
+        progs = cache["progs"]
+        cache.close()
+
+        try:
+            choice = menu(progs.keys())
+            if choice != "" and choice in progs:
+                prog = progs[choice]
+                if prog["term"]:
+                    sp.Popen(
+                        [getenv("TERMINAL", "term")] + prog["cmd"].split(" "),
+                    )
+                else:
+                    sp.Popen(prog["cmd"].split(" "))
+        except sp.CalledProcessError:
+            pass
+
+
+def tostr(inp, sep="\n"):
+    if isinstance(inp, str):
+        return inp
+    return sep.join(inp)
+
+
+def call(prog, inp=None):
+    return sp.check_output(prog, input=inp, text=True).strip()
+
+
+def menu(inp, *args):
+    return call([*MENU, *args], inp=tostr(inp, sep="\n"))
+
+
+main()

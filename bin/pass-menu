@@ -1,0 +1,17 @@
+#!/usr/bin/env zsh
+
+shopt -s nullglob globstar
+
+prefix=${PASSWORD_STORE_DIR}
+password_files=( "$prefix"/**/*.gpg )
+password_files=( "${password_files[@]#"$prefix"/}" )
+password_files=( "${password_files[@]%.gpg}" )
+
+password=$(printf '%s\n' "${password_files[@]}" | $MENU --width 600)
+
+if [[ $password == "otp/"* ]]; then
+	pass otp show -c "$password"
+else
+	pass show -c "$password"
+fi
+

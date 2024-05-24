@@ -1,0 +1,90 @@
+#!/usr/bin/env zsh
+
+# This script changes the themes of several applications from the command line input.
+# The available themes are:
+
+theme_opts=(
+	"gruvbox_dark"
+	"gruvbox_dark_soft"
+	"gruvbox_light"
+	"gruvbox_light_soft"
+)
+
+# The following files are symlinked to the appropriate theme files:
+
+sym_files=(
+	"$XDG_CONFIG_HOME/foot/colors/default.ini"
+	"$XDG_CONFIG_HOME/zathura/colors/default"
+	"$XDG_CONFIG_HOME/qutebrowser/colors/default.py"
+	"$XDG_CONFIG_HOME/qutebrowser/stylesheets/default.css"
+	"$XDG_CONFIG_HOME/zsh/plugins/fzf-nav/colors/default.zsh"
+	"$XDG_CONFIG_HOME/sway/colors/default"
+	"$XDG_CONFIG_HOME/sway/plugins/waybar/colors/default.css"
+	"$XDG_CONFIG_HOME/sway/plugins/tofi/colors/default"
+	"$XDG_CONFIG_HOME/sway/plugins/mako/colors/default"
+	"$XDG_CONFIG_HOME/nvim/after/colors/default.lua"
+)
+
+# The theme files are located in the same directories as the symlinked files, but with the theme name instead of "default".
+# The available themes are "gruvbox_dark" and "gruvbox_light".
+# This script removes the old symlinks and creates new ones with the theme name as the new target.
+
+# A special input is "time_of_day", which changes the theme to "$2" during daytime and "$3" at night.
+
+exit_msg() {
+	echo "$1"
+	notify-send "$1"
+	exit 1
+}
+
+if [[ -z $@ ]]; then
+	choice=$(echo ${(j,\n,)theme_opts[@]} | $MENU)
+else
+	choice=$1
+fi
+
+if [[ $choice == "time_of_day" ]]; then
+	# Get the current time
+	hour=$(date +%H)
+	# Check if it is daytime or nighttime
+	if [[ $hour -ge 8 && $hour -lt 18 ]]; then
+		choice=$2
+	else
+		choice=$3
+	fi
+fi
+
+# Check if the given theme is valid
+if [[ ! " ${theme_opts[@]} " =~ " $choice " ]]; then
+	exit_msg "Invalid theme: $choice"
+fi
+
+# Remove old symlinks and create new ones
+for sym in $sym_files; do
+	# get extension of the symlink, add a dot at the beginning if it is not empty
+	ext=${sym:e}
+	[[ -n $ext ]] && ext=".$ext"
+	# get folder of the symlink
+	folder=${sym:h}
+	# form target file
+	target="$folder/$choice$ext"
+	# check if the target file exists
+	if [[ ! -f $target ]]; then
+		exit_msg "Error - Target file does not exist: $target"
+	fi
+	# print what is being done, removing $XDG_CONFIG_HOME/ from the paths
+	echo "${sym/$XDG_CONFIG_HOME\//} -> ${target/$XDG_CONFIG_HOME\//}"
+	# remove old symlink
+	if [[ -e $sym ]]; then
+		if [[ -L $sym ]]; then
+			rm "$sym"
+		else
+			exit_msg "Error - File exists but is not a symlink: $sym"
+		fi
+	fi
+	# create new symlink
+	ln -s "$target" $sym
+done
+
+
+

@@ -1,0 +1,84 @@
+
+.fullscale {
+    height: 100%;
+    width: 100%;
+}
+
+.colflex {
+    display: flex;
+    flex-direction: column;
+}
+
+#main {
+    border-radius: 0px;
+    margin: 0px;
+    background-color: transparent;
+}
+
+#base {
+    margin: 0px;
+}
+
+#row {
+    display: flex;
+    margin: 0px;
+}
+
+#workspace {
+    background-color: transparent;
+    margin: 5px;
+    border-radius: 0px;
+    border-width: 0px;
+}
+
+#number {
+    background-color: transparent;
+    font-family: "FiraMono Nerd Font Medium";
+    font-size: 30px;
+    line-height: 32px;
+    width: 30px;
+    height: 36px;
+    top: -4px;
+    right: -6px;
+    vertical-align: center;
+    color: #FE8019FF;
+}
+
+#window {
+    border-radius: 10px;
+    border-width: 1px;
+    background-color: #3C3836DD;
+    border-color: #928374DD;
+}
+
+#window_active {
+    border-radius: 10px;
+    border-width: 1px;
+    background-color: #282828DD;
+    border-color: #83A598DD;
+}
+
+#title {
+    background-color: transparent;
+    font-family: "FiraMono Nerd Font Medium";
+    line-height: 26px;
+    font-size: 24px;
+    height: 30px;
+    top: 4px;
+    left: 6px;
+    color: #FABD2FFF;
+}
+
+#content {
+    background-color: transparent;
+    font-family: "FiraMono Nerd Font Medium";
+    line-height: 22px;
+    font-size: 18px;
+    width: 100%;
+    height: 100%;
+    margin-left: 2px;
+    margin-right: 6px;
+    margin-top: 4px;
+    vertical-align: top;
+    color: #FBF1C7FF;
+}

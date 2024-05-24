@@ -1,0 +1,40 @@
+#!/usr/bin/python
+
+from os import getenv
+import math
+import numpy as np
+import subprocess as sp
+
+
+def main():
+    menu = getenv("MENU", "dmenu").split()
+
+    results = []
+    out = "  "
+
+    loc = dict()
+    while 1:
+        res = "\n".join(results)
+        search = sp.check_output(
+            [*menu, "--width", "800", "--height", "500"],
+            input=res,
+            text=True,
+        ).strip()
+
+        rep = search
+        for var, val in loc.items():
+            rep = rep.replace(var, val)
+        if "=" in rep:
+            var, val = rep.split("=")
+            var = var.strip()
+            loc[var] = str(eval(val))
+            out = loc[var]
+            results.insert(0, f"{var}={out}")
+        else:
+            out = str(eval(rep))
+            results.insert(0, f"{search}={out}")
+        sp.call(["wl-copy", out])
+    return
+
+
+main()

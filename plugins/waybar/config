@@ -1,0 +1,231 @@
+{
+    "position": "top",
+    "layer": "top",
+	"mode": "hide",
+	"start_hidden": true,
+    "margin": "0 0 0 0",
+	"spacing": 0,
+	"fixed-center": true,
+	"ipc": true,
+    "sway/workspaces": {
+        "disable-scroll": true,
+        "all-outputs": false,
+        "format": "{icon}",
+		"tooltip": false,
+		"format-icons": {
+			"1:q": "q",
+			"2:w": "w",
+			"3:e": "e",
+			"4:r": "r",
+			"5:t": "t",
+			"6:y": "y",
+			"7:u": "u",
+			"8:i": "i",
+			"9:o": "o",
+			"10:p": "p",
+			"11:a": "a",
+			"12:s": "s",
+			"13:d": "d",
+			"14:f": "f",
+			"15:g": "g",
+			"16:m": "m",
+			"17:h": "h",
+			"18:j": "j",
+			"19:k": "k",
+			"20:l": "l",
+			"21:z": "z",
+			"22:x": "x",
+			"23:c": "c",
+			"24:v": "v",
+			"25:b": "b",
+			"26:n": "n",
+			"27:-": "-",
+			"28:,": ",",
+			"29:.": ".",
+			"30:'": "'",
+		},
+    },
+	"sway/window": {
+		"format": "{title}",
+		"max-length": 40,
+		"rotate": 90,
+		"tooltip": false,
+	},
+	"sway/mode": {
+		"format": "<span style=\"italic\">{}</span>",
+		"rotate": 90,
+		"tooltip": false,
+	},
+    "custom/new_workspace": {
+		"format": "",
+		"on-click": "~/.config/sway/plugins/wk30/new-workspace.zsh",
+		"tooltip": false,
+    },
+	"custom/kill": {
+		"format": "󰞇",
+		"on-click": "~/.config/sway/bin/force-kill",
+		"tooltip": false
+    },
+    "custom/reset": {
+		"exec-on-event": true,
+		"interval": "once",
+		"on-click": "~/.config/sway/bin/autorot",
+		"tooltip": false,
+    },
+    "custom/mark": {
+		"exec": "sleep 0.2 ; ~/.config/sway/bin/mark check",
+		"exec-on-event": true,
+		"interval": "once",
+		"on-click": "~/.config/sway/bin/mark",
+		"tooltip": false,
+    },
+    "custom/osk": {
+		"format": "󰌓",
+		"on-click": "pkill --signal=SIGRTMIN wvkbd-mobintl",
+		"tooltip": false,
+    },
+    "custom/launch": {
+		"format": "",
+		"on-click": "pkill --signal=USR2 wvkbd-mobintl && ~/.config/sway/bin/launcher launch",
+		"tooltip": false,
+    },
+    "custom/firefox": {
+		"format": "",
+		"on-click": "~/.config/sway/bin/open firefox",
+		"tooltip": false,
+    },
+    "custom/xournalpp": {
+		"format": "󱞁",
+		"on-click": "~/.config/sway/bin/open xournalpp",
+		"tooltip": false,
+    },
+    "custom/backlight_decrease": {
+		"format": "󰽥",
+		"on-click": "brightnessctl set 5%-",
+		"rotate": 90,
+		"tooltip": false,
+    },
+    "custom/backlight_increase": {
+		"format": "󰽧",
+		"on-click": "brightnessctl set +5%",
+		"rotate": 90,
+		"tooltip": false,
+    },
+	"custom/smb": {
+		"exec": "sleep 6 ; smb-server",
+		"exec-on-event": true,
+		"interval": 30,
+		"format": "{}",
+		"tooltip": false,
+		"on-click": "~/.local/bin/smb-server toggle",
+	},
+	"custom/vpn": {
+		"exec": "sleep 6 ; vpn",
+		"exec-on-event": true,
+		"interval": 30,
+		"format": "{}",
+		"tooltip": false,
+		"on-click": "~/.local/bin/vpn toggle",
+	},
+	"custom/modem": {
+		"exec": "sleep 6 ; modem",
+		"exec-on-event": true,
+		"interval": 30,
+		"format": "{}",
+		"tooltip": false,
+		"on-click": "~/.local/bin/modem toggle",
+	},
+	"custom/disk": {
+		"interval": 30,
+		"exec": "df -h | grep /dev/nvme0n1p2 | awk '{print $4}'",
+		"format": "/{}",
+		"tooltip": false,
+		"on-click": "~/.config/sway/bin/open nemo",
+	},
+    "clock": {
+		"interval": 30,
+		"format": "{:%m.%d %a %H:%M %Z}",
+		"rotate": 90,
+		"tooltip": true,
+		"tooltip-format": "<tt><small>{calendar}</small></tt>",
+        "calendar": {
+			"mode"          : "year",
+			"mode-mon-col"  : 3,
+			"weeks-pos"     : "right",
+			"on-scroll"     : 1,
+			"format": {
+				"months":     "<span color='#689d6a'>{}</span>",
+				"days":       "<span color='#689d6a'>{}</span>",
+				"weeks":      "<span color='#d79921'>W{}</span>",
+				"weekdays":   "<span color='#458588'>{}</span>",
+				"today":      "<span color='#cc241d'><u>{}</u></span>"
+			}
+		},
+        "actions":  {
+                    "on-click-right": "mode",
+                    "on-scroll-up": "shift_up",
+                    "on-scroll-down": "shift_down"
+		}
+    },
+    "cpu": {
+        "format": "",
+		"on-click": "term"
+    },
+    "memory": {
+        "format": "M{}",
+		"on-click": "term -e btm --color gruvbox"
+    },
+    "battery": {
+		"interval": 30,
+        "bat": "BAT0",
+        "states": {
+            "critical": 5,
+            "low": 15,
+            "mid": 60,
+            "max": 101
+        },
+        "format-max": "󱊣",
+        "format-mid": "󱊢",
+        "format-low": "󱊡",
+        "format-critical": "󰂎",
+		"on-click": "wlogout -n -b 2 -p layer-shell"
+    },
+    "network": {
+        "format": "",
+        "format-wifi": "󰖩",
+        "format-ethernet": "󰈀",
+        "format-disconnected": "󰤮",
+		"tooltip": true,
+		"tooltip-format": "{essid} ({signalStrength}) {ipaddr}",
+		"on-click": "cinnamon-settings network",
+		"on-click-right": "~/.config/sway/bin/wifi"
+    },
+	"mpris": {
+		"format": "{status_icon}{length}",
+		"status-icons": {
+			"playing": ">",
+			"paused": "||",
+			"stopped": "⏹"
+		}
+	},
+	"pulseaudio": {
+		"format": "{icon}",
+		"format-bluetooth": "{icon}",
+		"format-muted": "",
+		"format-icons": ["", "", ""],
+		"on-click": "~/.config/sway/bin/open pavucontrol",
+		"on-click-right": "volume toggle",
+		"rotate": 90
+	},
+	"bluetooth": {
+		"format": "",
+		"format-off": "󰂲",
+		"format-connected": "",
+		"tooltip-format": "{controller_alias}\t{controller_address}",
+		"tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
+		"tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+        "on-click": "~/.config/sway/bin/open blueman-manager",
+		"on-click-right": "bluetooth"
+	}
+}
+

@@ -1,0 +1,219 @@
+
+include $XDG_CONFIG_HOME/sway/colors/default
+
+set $PLUG $XDG_CONFIG_HOME/sway/plugins
+set $BIN $XDG_CONFIG_HOME/sway/bin
+
+set $modf Mod4
+set $modm Mod4+Shift
+set $modr Mod4+Ctrl
+set $modw Mod4+Mod1
+set $modl Mod4+Mod1+Ctrl+Shift
+
+set $new_wk $modf+n
+set $nav_wk $modf+f
+set $mov_wk $modf+m
+set $out_wk $modf+o
+
+set $left  h
+set $down  j
+set $up    k
+set $right l
+
+set $prev u
+set $next d
+
+set $move_amount 50
+
+set $resize 10 px or 2 ppt
+
+floating_modifier $modf
+
+client.focused          $CBG $CBG $CFG $CBG $CBG
+client.focused_inactive $CBG $CBG $CFG $CBG $CBG
+client.unfocused        $CBG $CBG $CFG $CBG $CBG
+client.urgent           $CBG $CBG $CFG $CBG $CFG
+client.placeholder      $CBG $CBG $CFG $CBG $CFG
+
+xwayland disable
+
+font "FiraMono Nerd Font Medium" 18px
+
+default_orientation auto
+title_align center
+
+default_border pixel 0
+default_floating_border pixel 0
+hide_edge_borders both
+smart_borders on
+
+gaps inner 0
+gaps outer 0
+smart_gaps on
+
+titlebar_padding 1 1
+titlebar_border_thickness 0
+
+force_display_urgency_hint 0 ms
+focus_on_window_activation none
+focus_follows_mouse no
+mouse_warping none
+popup_during_fullscreen ignore
+focus_wrapping no
+workspace_auto_back_and_forth no
+show_marks no
+
+seat seat0 hide_cursor 3000
+
+input type:keyboard {
+	events enabled
+	repeat_delay 180
+	repeat_rate 45
+	xkb_options compose:menu
+}
+
+input type:pointer {
+	events enabled
+	accel_profile "flat"
+	pointer_accel 1
+	scroll_factor 2
+}
+
+input type:touchpad {
+	events enabled
+	accel_profile "flat"
+	pointer_accel 1
+	scroll_factor 2
+}
+
+output eDP-1 position 0 0 res 1920x1280@60.001Hz scale 1 bg $_SWAY_BG0 fill
+
+output 'ASUSTek COMPUTER INC ASUS VP249 0x0001154B' position 0 -1080 res 1920x1080@120.000Hz bg $_SWAY_BG1 fill
+output 'AOC 2470W GGWJ1HA038640' position 0 -1080 res 1920x1080@60.000Hz bg $_SWAY_BG2 fill
+
+output 'BNQ BenQ BL2480T M1M0691701Q' position 0 -1080 res 1920x1080@60.000Hz bg $_SWAY_BG1 fill
+output 'Seiko Epson Corporation EPSON PJ 0x00000101' position 1920 0 res 1920x1080@60.000Hz bg $_SWAY_BG2 fill
+
+output 'Dell Inc. DELL U2412M WNPMV03D08SL' position 0 -1200 res 1920x1200@59.950Hz bg $_SWAY_BG1 fill
+
+bindswitch --reload --locked lid:on output eDP-1 disable
+bindswitch --reload --locked lid:off output eDP-1 enable
+
+input "1386:21084:Wacom_HID_525C_Finger" map_to_output eDP-1
+input "1386:21084:Wacom_HID_525C_Pen" map_to_output eDP-1
+
+for_window [title="."] title_format "(%app_id) %title"
+
+for_window [app_id="_float"] floating enable
+for_window [app_id="_float"] resize set 80 ppt 80 ppt
+for_window [app_id="_float"] move position center
+
+for_window [window_role="pop-up"]      floating enable
+for_window [window_role="bubble"]      floating enable
+for_window [window_role="task_dialog"] floating enable
+for_window [window_role="Preferences"] floating enable
+for_window [window_role="Organizer"]   floating enable
+for_window [window_role="About"]       floating enable
+for_window [window_role="toolbox"]     floating enable
+for_window [window_role="page-info"]   floating enable
+for_window [window_role="webconsole"]  floating enable
+for_window [window_type="dialog"]      floating enable
+for_window [window_type="menu"]        floating enable
+
+bindsym $modf+$up    focus up
+bindsym $modf+$down  focus down
+bindsym $modf+$left  focus left
+bindsym $modf+$right focus right
+
+bindsym $modf+$prev workspace prev_on_output
+bindsym $modf+$next workspace next_on_output
+bindsym $modf+Tab workspace back_and_forth
+
+bindsym $modf+slash focus mode_toggle
+bindsym $modf+space fullscreen toggle
+
+bindsym $modm+$up    move up    $move_amount
+bindsym $modm+$down  move down  $move_amount
+bindsym $modm+$left  move left  $move_amount
+bindsym $modm+$right move right $move_amount
+
+bindsym $modm+$prev [con_id=__focused__] move window to workspace prev_on_output, focus
+bindsym $modm+$next [con_id=__focused__] move window to workspace next_on_output, focus
+
+bindsym $modf+q          kill
+bindsym $modr+q          exec $BIN/force-kill
+
+bindsym $modf+z          exec $BIN/touchpad_toggle
+
+bindsym $modf+Escape     exec $BIN/launcher launch
+
+bindsym $modf+Return     exec $TERMINAL
+
+bindsym $modf+minus      exec wpctl set-mute   "@DEFAULT_AUDIO_SINK@" toggle
+bindsym $modf+comma      exec wpctl set-volume "@DEFAULT_AUDIO_SINK@" 2%-
+bindsym $modf+period     exec wpctl set-volume "@DEFAULT_AUDIO_SINK@" 2%+
+
+bindsym $modr+minus      exec $BIN/media-menu play-pause
+bindsym $modr+comma      exec $BIN/media-menu previous
+bindsym $modr+period     exec $BIN/media-menu next
+
+mode "RESIZE" {
+	bindsym $left  resize shrink width  $resize
+	bindsym $right resize grow   width  $resize
+	bindsym $down  resize shrink height $resize
+	bindsym $up    resize grow   height $resize
+	bindsym Return mode "default"
+	bindsym Escape mode "default"
+}
+bindsym $modf+r  mode "RESIZE"
+
+mode "WK RELOCATE" {
+	bindsym $left  move workspace to output left
+	bindsym $right move workspace to output right
+	bindsym $down  move workspace to output down
+	bindsym $up    move workspace to output up
+	bindsym Return mode "default"
+	bindsym Escape mode "default"
+}
+bindsym $modf+w mode "WK RELOCATE"
+
+set $launch "LAUNCH"
+mode $launch {
+	bindsym t exec $BIN/theme                                                ; mode "default"
+	bindsym s exec $BIN/screen                                               ; mode "default"
+	bindsym p exec $BIN/pass-menu                                            ; mode "default"
+	bindsym c exec $BIN/python-calc                                          ; mode "default"
+	bindsym k exec pkill --signal=SIGRTMIN wvkbd-mobintl                     ; mode "default"
+	bindsym b exec $TERMINAL -a "_float" -e env RUN="bib" $SHELL             ; mode "default"
+	bindsym l exec $TERMINAL -a "_float" -e env RUN="todo" $SHELL            ; mode "default"
+	bindsym e exec $TERMINAL -a "_float" -e env RUN="todo edit" $SHELL       ; mode "default"
+	bindsym Return mode "default"
+	bindsym Escape mode "default"
+}
+bindsym $modf+s mode $launch
+
+mode "SPLIT" {
+	bindsym l split horizontal    ; mode "default"
+	bindsym j split vertical      ; mode "default"
+	bindsym Return mode "default"
+	bindsym Escape mode "default"
+}
+bindsym $modf+backslash  mode "SPLIT"
+
+bar {
+	id bar-0
+	swaybar_command /home/ivo/.config/sway/bin/bar-0
+	mode dock
+	modifier $modw
+}
+
+include /etc/sway/config.d/*
+
+exec        $BIN/theme time_of_day gruvbox_light_soft gruvbox_dark
+exec        systemctl --user start sway-session.service
+exec_always $BIN/gestures
+exec_always $BIN/start-overview
+
+exec_always $PLUG/wk30/bindings.zsh $new_wk $nav_wk $mov_wk $out_wk
+
+

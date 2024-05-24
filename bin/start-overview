@@ -1,0 +1,16 @@
+#!/usr/bin/env zsh
+
+SOV_FILE="/tmp/sovpipe"
+
+pkill sov
+
+rm -f $SOV_FILE && mkfifo $SOV_FILE
+
+tail -f $SOV_FILE | sov -n \
+	-s $XDG_CONFIG_HOME/sway/plugins/sov \
+	--anchor=t \
+	--margin=40 \
+	--columns=3 \
+	--ratio=4 & disown 
+echo 0 > "$SOV_FILE"
+

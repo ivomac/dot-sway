@@ -1,0 +1,65 @@
+#!/usr/bin/env python
+
+import subprocess as sp
+from os import getenv
+from sys import argv
+
+MENU = getenv("MENU", "dmenu").split()
+
+
+def main(action):
+    players = get_players().strip("\n").split("\n")
+    dic = dict()
+    for player in players:
+        meta = get_meta(player)
+        if len(meta):
+            dic[player] = meta
+
+    player = choose(dic)
+
+    command(player, action)
+    return
+
+
+def command(player, cmd):
+    return sp.check_output(["playerctl", "-p", player, cmd], text=True).strip()
+
+
+def get_players():
+    return sp.check_output(["playerctl", "--list-all"], text=True).strip()
+
+
+def get_meta(player):
+    form = "{{playerName}}\n{{status}}\n{{artist}}\n{{title}}"
+
+    meta = sp.check_output(
+        ["playerctl", "-p", player, "metadata", "--format", form], text=True
+    ).strip()
+    if not len(meta):
+        return ""
+
+    name, status, artist, title = meta.split("\n")
+
+    status = {"Playing": "▶", "Paused": "⏸", "Stopped": "⏹"}[status]
+
+    return f"{name}: {status} {artist} - {title:40}"
+
+
+def choose(dic):
+    if not dic:
+        raise Exception("No items to choose from.")
+    elif len(dic) == 1:
+        return list(dic.keys())[0]
+    chosen_value = sp.check_output(
+        MENU,
+        text=True,
+        input=dic.values(),
+    )
+
+    for name, value in dic.items():
+        if chosen_value in value:
+            return name
+    return
+
+
+main(argv[1])

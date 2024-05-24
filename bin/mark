@@ -1,0 +1,15 @@
+#!/usr/bin/env zsh
+
+out=$(swaymsg -t get_tree | grep '_[M]ARKSTAR_')
+
+if [[ -n "$1" ]] ; then
+	[[ -n "$out" ]] && echo "⬇"|| echo ""
+	return
+fi
+
+if [[ -n "$out" ]] ; then
+	swaymsg \[con_mark='_MARKSTAR_'\] move to workspace current > /dev/null
+	swaymsg unmark _MARKSTAR_ > /dev/null
+else
+	swaymsg mark _MARKSTAR_ > /dev/null
+fi

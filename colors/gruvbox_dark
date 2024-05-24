@@ -1,0 +1,39 @@
+# gruvbox dark
+
+set $CALPHA 0.9
+
+set $CBLACK #282828
+set $CRED #cc241d
+set $CGREEN #98971a
+set $CYELLOW #d79921
+set $CBLUE #458588
+set $CMAGENTA #b16286
+set $CCYAN #689d6a
+set $CWHITE #a89984
+set $CBLACK1 #928374
+set $CRED1 #fb4934
+set $CGREEN1 #b8bb26
+set $CYELLOW1 #fabd2f
+set $CBLUE1 #83a598
+set $CMAGENTA1 #d3869b
+set $CCYAN1 #8ec07c
+set $CWHITE1 #ebdbb2
+
+set $CORANGE #d65d0e
+set $CORANGE1 #fe8019
+
+set $CBG0 #282828
+set $CBG1 #3c3836
+set $CBG2 #504945
+set $CBG3 #665c54
+set $CBG4 #7c6f64
+
+set $CFG0 #fbf1c7
+set $CFG1 #ebdbb2
+set $CFG2 #d5c4a1
+set $CFG3 #bdae93
+set $CFG4 #a89984
+
+set $CBG $CBG0
+set $CFG $CFG1
+

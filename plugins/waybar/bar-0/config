@@ -1,0 +1,11 @@
+{
+	"include": "~/.config/sway/plugins/waybar/config",
+	"position": "left",
+	"mode": "dock",
+	"start_hidden": false,
+	"bar-id": "bar-0",
+    "modules-left": ["sway/workspaces", "custom/new_workspace", "sway/mode"],
+    "modules-center": ["custom/kill", "custom/reset", "custom/mark", "custom/osk", "custom/launch", "custom/firefox", "custom/xournalpp"],
+    "modules-right": ["custom/modem", "custom/vpn", "custom/smb", "pulseaudio", "custom/backlight_increase", "custom/backlight_decrease", "bluetooth", "network", "cpu", "battery", "clock"]
+}
+

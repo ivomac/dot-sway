@@ -1,0 +1,9 @@
+#!/usr/bin/env zsh
+
+if [[ $(nmcli radio wifi) == "enabled" ]]; then
+	nmcli radio wifi off
+	notify-send "Wifi" "Wifi turned off"
+else
+	nmcli radio wifi on
+	notify-send "Wifi" "Wifi turned on"
+fi
