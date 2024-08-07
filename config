@@ -96,9 +96,6 @@ output 'Seiko Epson Corporation EPSON PJ 0x00000101' position 1920 0 res 1920x10
 
 output 'Dell Inc. DELL U2412M WNPMV03D08SL' position 0 -1200 res 1920x1200@59.950Hz bg $_SWAY_BG1 fill
 
-bindswitch --reload --locked lid:on output eDP-1 disable
-bindswitch --reload --locked lid:off output eDP-1 enable
-
 input "1386:21084:Wacom_HID_525C_Finger" map_to_output eDP-1
 input "1386:21084:Wacom_HID_525C_Pen" map_to_output eDP-1
 
