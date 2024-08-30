@@ -5,22 +5,7 @@ export BROWSER="qutebrowser"
 export PDF="zathura"
 export IMAGE="qimgv"
 
-export QUTE_QT_WRAPPER="PyQt6"
-
-export WLR_RENDERER=gles2
 export XDG_CURRENT_DESKTOP=sway
-export QT_QPA_PLATFORM=wayland
-export MOZ_ENABLE_WAYLAND=1
-export GDK_BACKEND=wayland,x11
-export CLUTTER_BACKEND=wayland
-export QT_QPA_PLATFORM=wayland
-export ECORE_EVAS_ENGINE=wayland
-export ELM_ENGINE=wayland
-export SDL_VIDEODRIVER=wayland
-
-export WLR_NO_HARDWARE_CURSORS=1
-export WLR_DRM_NO_MODIFIERS=1
-export WLR_DRM_NO_ATOMIC=1
 
 export XCOMPOSEFILE="$XDG_CONFIG_HOME/sway/xcompose"
 export XKB_DEFAULT_OPTIONS="compose:menu"
